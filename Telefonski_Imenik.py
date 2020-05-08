@@ -8,332 +8,332 @@ import os
 
 class PhoneBook():
     def __init__(self):
-        self.imenik = tk.Tk()
-        self.imenik.title("Telefonski imenik")
-        self.ime = StringVar()
-        self.prezime = StringVar()
-        self.telefon = StringVar()
-        self.nadji = StringVar()
-        self.nadji.set("Pretrazi...")
+        self.phonebook = tk.Tk()
+        self.phonebook.title("Telefonski imenik")
+        self.name = StringVar()
+        self.last_name = StringVar()
+        self.phone_number = StringVar()
+        self.find = StringVar()
+        self.find.set("Pretrazi...")
         self.rbutton = IntVar()
-        self.lista = []
-        self.lista1 = []
+        self.list1 = []
+        self.list2 = []
 
-        unosPodataka = tk.LabelFrame(self.imenik, text="Unos podataka", padx=5, pady=5)
-        imeLabel = tk.Label(unosPodataka, text="Ime: ")
-        prezimeLabel = tk.Label(unosPodataka, text="Prezime: ")
-        telefonLabel = tk.Label(unosPodataka, text="Telefon: ")
-        self.imeEntry = tk.Entry(unosPodataka, textvariable=self.ime)
-        self.prezimeEntry = tk.Entry(unosPodataka, textvariable=self.prezime)
-        self.telefonEntry = tk.Entry(unosPodataka, textvariable=self.telefon)
-        Dodaj = tk.Button(unosPodataka, text="Dodaj", command=self.dodaj)
+        input_data = tk.LabelFrame(self.phonebook, text="Unos podataka", padx=5, pady=5)
+        nameLabel = tk.Label(input_data, text="Ime: ")
+        last_nameLabel = tk.Label(input_data, text="Prezime: ")
+        phone_numberLabel = tk.Label(input_data, text="Telefon: ")
+        self.nameEntry = tk.Entry(input_data, textvariable=self.name)
+        self.last_nameEntry = tk.Entry(input_data, textvariable=self.last_name)
+        self.phone_numberEntry = tk.Entry(input_data, textvariable=self.phone_number)
+        Add = tk.Button(input_data, text="Dodaj", command=self.add)
 
-        unosPodataka.grid(row=0, column=0)
+        input_data.grid(row=0, column=0)
 
-        imeLabel.grid(row=0, column=0)
-        self.imeEntry.grid(row=0, column=1)
-        prezimeLabel.grid(row=1, column=0)
-        self.prezimeEntry.grid(row=1, column=1)
-        telefonLabel.grid(row=2, column=0)
-        self.telefonEntry.grid(row=2, column=1)
-        Dodaj.grid(row=0, column=3, columnspan=3, rowspan=3, sticky=W + E + N + S)
+        nameLabel.grid(row=0, column=0)
+        self.nameEntry.grid(row=0, column=1)
+        last_nameLabel.grid(row=1, column=0)
+        self.last_nameEntry.grid(row=1, column=1)
+        phone_numberLabel.grid(row=2, column=0)
+        self.phone_numberEntry.grid(row=2, column=1)
+        Add.grid(row=0, column=3, columnspan=3, rowspan=3, sticky=W + E + N + S)
 
-        alatke = tk.LabelFrame(self.imenik, text="Alatke", padx=5, pady=5)
-        alatke.grid(row=0, column=1)
-        obrisiSve = tk.Button(alatke, text="Obrisi sve", command=self.obrisiSVE)
-        obrisiSve.grid(row=0, column=0, sticky=W + E)
-        izmeni = tk.Button(alatke, text="Izmeni", command=self.izmeni)
-        izmeni.grid(row=0, column=1, sticky=W + E)
-        obrisiSelektovano = tk.Button(alatke, text="Obrisi selektovano", command=self.ObrisiSelektovano)
-        obrisiSelektovano.grid(row=1, column=0, sticky=W + E)
-        memorisi = tk.Button(alatke, text="Memorisi", command=self.memorisi)
-        memorisi.grid(row=1, column=1, sticky=W + E)
-        ispisiBazu = tk.Button(alatke, text="Ispisi bazu", command=self.ispisiBazu)
-        ispisiBazu.grid(row=2, column=1, sticky=W + E)
-        obrisiBazu = tk.Button(alatke, text="Obrisi bazu", command=self.obrisiBazu)
-        obrisiBazu.grid(row=2, column=0, sticky=W + E)
+        tools = tk.LabelFrame(self.phonebook, text="Alatke", padx=5, pady=5)
+        tools.grid(row=0, column=1)
+        clear = tk.Button(tools, text="Obrisi sve", command=self.clearAll)
+        clear.grid(row=0, column=0, sticky=W + E)
+        edit = tk.Button(tools, text="Izmeni", command=self.edit)
+        edit.grid(row=0, column=1, sticky=W + E)
+        clearSelected = tk.Button(tools, text="Obrisi selektovano", command=self.clear_selected)
+        clearSelected.grid(row=1, column=0, sticky=W + E)
+        save = tk.Button(tools, text="Memorisi", command=self.save)
+        save.grid(row=1, column=1, sticky=W + E)
+        importData = tk.Button(tools, text="Ispisi bazu", command=self.importDatabase)
+        importData.grid(row=2, column=1, sticky=W + E)
+        deleteDatabase = tk.Button(tools, text="Obrisi bazu", command=self.deleteDatabase)
+        deleteDatabase.grid(row=2, column=0, sticky=W + E)
 
-        pretragaKontakata = tk.LabelFrame(self.imenik, text="Pretraga kontakata", padx=5, pady=5)
-        pretragaKontakata.grid(row=2, column=0, columnspan=2)
-        self.pretraga = tk.Entry(pretragaKontakata, textvariable=self.nadji).pack(side=LEFT)
-        pretrazi = tk.Button(pretragaKontakata, text="Pretrazi", command=self.pretrazi).pack(side=LEFT)
-        poImenu = tk.Radiobutton(pretragaKontakata, text="Po imenu", variable=self.rbutton, value=1).pack(side=LEFT)
-        poPrezimenu = tk.Radiobutton(pretragaKontakata, text="Po prezimenu", variable=self.rbutton, value=2).pack(side=LEFT)
-        poBrojuTelefona = tk.Radiobutton(pretragaKontakata, text="Po broju telefona", variable=self.rbutton, value=3)
-        poBrojuTelefona.pack(side=LEFT)
+        contact_search = tk.LabelFrame(self.phonebook, text="Pretraga kontakata", padx=5, pady=5)
+        contact_search.grid(row=2, column=0, columnspan=2)
+        self.searchEntry = tk.Entry(contact_search, textvariable=self.find).pack(side=LEFT)
+        searchButton = tk.Button(contact_search, text="Pretrazi", command=self.search).pack(side=LEFT)
+        byName = tk.Radiobutton(contact_search, text="Po imenu", variable=self.rbutton, value=1).pack(side=LEFT)
+        byLast_name = tk.Radiobutton(contact_search, text="Po prezimenu", variable=self.rbutton, value=2).pack(side=LEFT)
+        byPhone_number = tk.Radiobutton(contact_search, text="Po broju telefona", variable=self.rbutton, value=3)
+        byPhone_number.pack(side=LEFT)
 
-        self.spisak = ttk.Treeview(self.imenik)
-        self.spisak['show'] = 'headings'
-        self.spisak["columns"] = ("ime", "prezime", "telefon")
-        self.spisak.column("ime", width=230, minwidth=230)
-        self.spisak.column("prezime", width=230, minwidth=230)
-        self.spisak.column("telefon", width=140, minwidth=140, stretch=tk.NO)
-        self.spisak.heading("ime", text="Ime")
-        self.spisak.heading("prezime", text="Prezime")
-        self.spisak.heading("telefon", text="Telefon")
-        self.spisak.grid(row=1, column=0, columnspan=2)
+        self.display = ttk.Treeview(self.phonebook)
+        self.display['show'] = 'headings'
+        self.display["columns"] = ("name", "lastname", "phone_number")
+        self.display.column("name", width=230, minwidth=230)
+        self.display.column("lastname", width=230, minwidth=230)
+        self.display.column("phone_number", width=140, minwidth=140, stretch=tk.NO)
+        self.display.heading("name", text="Ime")
+        self.display.heading("lastname", text="Prezime")
+        self.display.heading("phone_number", text="Telefon")
+        self.display.grid(row=1, column=0, columnspan=2)
 
-        self.imeEntry.focus()
-        self.imenik.mainloop()
-
-
-    def dodaj(self):
-        if self.validacija(self.ime,self.prezime,self.telefon,self.imeEntry,self.prezimeEntry,self.telefonEntry)==True:
-            self.spisak.insert("", "end", values=((self.ime.get()), (self.prezime.get()), (self.telefon.get())))
-            self.lista.append((self.ime.get(), self.prezime.get(), self.telefon.get()))
-            self.ime.set("")
-            self.prezime.set("")
-            self.telefon.set("")
-            self.imeEntry.focus()
+        self.nameEntry.focus()
+        self.phonebook.mainloop()
 
 
-    def obrisiSVE(self):
-        if self.lista != []:
-            self.spisak.delete(*self.spisak.get_children())
-            self.lista.clear()
+    def add(self):
+        if self.validation(self.name, self.last_name, self.phone_number, self.nameEntry, self.last_nameEntry, self.phone_numberEntry)==True:
+            self.display.insert("", "end", values=((self.name.get()), (self.last_name.get()), (self.phone_number.get())))
+            self.list1.append((self.name.get(), self.last_name.get(), self.phone_number.get()))
+            self.name.set("")
+            self.last_name.set("")
+            self.phone_number.set("")
+            self.nameEntry.focus()
+
+
+    def clearAll(self):
+        if self.list1 != []:
+            self.display.delete(*self.display.get_children())
+            self.list1.clear()
         else:
             messagebox.showwarning("Obavestenje","Lista je vec prazna.")
 
 
-    def validacija(self,ime,prezime,telefon,imeEntry,prezimeEntry,telefonEntry):
-        if ime.get()=="":
+    def validation(self, name, lastname, phone_number, nameEntry, lastnameEntry, phone_numberEntry):
+        if name.get()== "":
             messagebox.showerror("Greska", "Ime je obavezan podatak. Unesite ime.")
-            imeEntry.focus()
+            nameEntry.focus()
             return False
-        elif prezime.get()=="":
+        elif lastname.get()== "":
             messagebox.showerror("Greska","Prezime je obavezan podatak. Unesite prezime.")
-            prezimeEntry.focus()
+            lastnameEntry.focus()
             return False
-        elif telefon.get()=="":
+        elif phone_number.get()== "":
             messagebox.showerror("Greska","Broj telefona je obavezan podatak. Unesite broj telefona.")
-            telefonEntry.focus()
+            phone_numberEntry.focus()
             return False
-        elif not telefon.get().isnumeric():
+        elif not phone_number.get().isnumeric():
             messagebox.showerror("Greska","Broj telefona moze sadrzati samo numericke karaktere(brojeve).")
-            telefon.set("")
-            telefonEntry.focus()
+            phone_number.set("")
+            phone_numberEntry.focus()
             return False
-        elif telefon.get()[:3]!="381":
+        elif phone_number.get()[:3]!= "381":
             messagebox.showerror("Neispravan broj telefona","Broj telefona mora pocinjati sa 381")
-            telefon.set("")
-            telefonEntry.focus()
+            phone_number.set("")
+            phone_numberEntry.focus()
             return False
-        elif telefon.get()[3]=="0":
+        elif phone_number.get()[3]== "0":
             messagebox.showerror("Neispravan broj telefona","Broj telefona nije odgovarajuceg formata.")
-            telefon.set("")
-            telefonEntry.focus()
+            phone_number.set("")
+            phone_numberEntry.focus()
             return False
-        elif len(telefon.get())<11 or len(telefon.get())>12:
+        elif len(phone_number.get())<11 or len(phone_number.get())>12:
             messagebox.showerror("Neispravan broj telefona","Neispravna duzina broja telefona.")
-            telefon.set("")
-            telefonEntry.focus()
+            phone_number.set("")
+            phone_numberEntry.focus()
             return False
         else:
             return True
 
 
-    def ObrisiSelektovano(self):
-        if self.lista != [] and self.spisak.selection() != ():
-            pitanje = messagebox.askquestion("Brisanje","Da li zelite da obrisete ovaj kontakt iz baze?",icon="question")
-            if pitanje == "yes":
-                potvrda = False
-                br_obrisanih = 0
-                br_pokusaja = 0
-                pristup_bazi = 0
-                for selektovan in self.spisak.selection():
-                    ime = str(tuple(self.spisak.item(selektovan)['values'])[0])
-                    prezime = str(tuple(self.spisak.item(selektovan)['values'])[1])
-                    telefon = str(tuple(self.spisak.item(selektovan)['values'])[2])
-                    for tupl in range(len(self.lista)):
-                        if self.lista[tupl] == (ime,prezime,telefon):
-                            self.lista.pop(tupl)
+    def clear_selected(self):
+        if self.list1 != [] and self.display.selection() != ():
+            question = messagebox.askquestion("Brisanje","Da li zelite da obrisete ovaj kontakt iz baze?",icon="question")
+            if question == "yes":
+                confirmation = False
+                deleted = 0
+                attempts = 0
+                databaseAccess = 0
+                for selected in self.display.selection():
+                    name = str(tuple(self.display.item(selected)['values'])[0])
+                    lastname = str(tuple(self.display.item(selected)['values'])[1])
+                    phone_number = str(tuple(self.display.item(selected)['values'])[2])
+                    for item in range(len(self.list1)):
+                        if self.list1[item] == (name, lastname, phone_number):
+                            self.list1.pop(item)
                             break
                     try:
-                        kontakti = load_workbook(filename="BazaKontakata.xlsx")
-                        kontakti.active = 0
-                        Sheet = kontakti.active
-                        broj = 2
+                        contacts = load_workbook(filename="ContactsDatabase.xlsx")
+                        contacts.active = 0
+                        Sheet = contacts.active
+                        number = 2
                         for value in Sheet.iter_rows(min_row=2, min_col=1, max_col=3, values_only=True):
-                            if value[0] == ime and value[1] == prezime and str(value[2]) == str(telefon):
-                                Sheet.delete_rows(idx=broj, amount=1)
-                                kontakti.save(filename="BazaKontakata.xlsx")
-                                potvrda = True
-                                br_obrisanih+=1
+                            if value[0] == name and value[1] == lastname and str(value[2]) == str(phone_number):
+                                Sheet.delete_rows(idx=number, amount=1)
+                                contacts.save(filename="ContactsDatabase.xlsx")
+                                confirmation = True
+                                deleted+=1
                             else:
-                                broj+=1
+                                number+=1
                     except:
-                        if pristup_bazi == 0:
+                        if databaseAccess == 0:
                             messagebox.showinfo("Obavestenje", "Ne postoji baza sa kontaktima.")
-                            pristup_bazi += 1
-                    br_pokusaja +=1
-                    self.spisak.delete(selektovan)
+                            databaseAccess += 1
+                    attempts +=1
+                    self.display.delete(selected)
 
-                if potvrda == True:
-                    if br_obrisanih == 1:
+                if confirmation == True:
+                    if deleted == 1:
                         messagebox.showinfo("Obavestenje", "Oznaceni kontakt je uspesno obrisan iz baze.")
-                    elif br_obrisanih > 1:
+                    elif deleted > 1:
                         messagebox.showinfo("Obavestenje", "Oznaceni kontakti su uspesno obrisani iz baze.")
                 else:
-                    if br_pokusaja == 1:
+                    if attempts == 1:
                         messagebox.showinfo("Obavestenje", "Kontakt koji zelite obrisati ne postoji u bazi kontakata, ali ce biti obrisan sa liste.")
-                    elif br_pokusaja > 1:
+                    elif attempts > 1:
                         messagebox.showinfo("Obavestenje", "Kontakti koje zelite obrisati ne postoje u bazi kontakata, ali ce biti obrisani sa liste.")
             else:
-                for selektovan in self.spisak.selection():
-                    ime = str(tuple(self.spisak.item(selektovan)['values'])[0])
-                    prezime = str(tuple(self.spisak.item(selektovan)['values'])[1])
-                    telefon = str(tuple(self.spisak.item(selektovan)['values'])[2])
-                    for tupl in range(len(self.lista)):
-                        if self.lista[tupl] == (ime,prezime,telefon):
-                            self.lista.pop(tupl)
+                for selected in self.display.selection():
+                    name = str(tuple(self.display.item(selected)['values'])[0])
+                    lastname = str(tuple(self.display.item(selected)['values'])[1])
+                    phone_number = str(tuple(self.display.item(selected)['values'])[2])
+                    for item in range(len(self.list1)):
+                        if self.list1[item] == (name, lastname, phone_number):
+                            self.list1.pop(item)
                             break
-                    self.spisak.delete(selektovan)
+                    self.display.delete(selected)
                 messagebox.showinfo("Obavestenje","Kontakt je prividno obrisan sa liste, ali se i dalje nalazi u bazi.")
         else:
             messagebox.showwarning("Obavestenje","Niste oznacili kontakte koje zelite da obrisete.")
 
 
-    def memorisi(self):
-        if self.lista != []:
+    def save(self):
+        if self.list1 != []:
             try:
-                kontakti = load_workbook(filename="BazaKontakata.xlsx")
+                contacts = load_workbook(filename="ContactsDatabase.xlsx")
             except:
-                kreiraj = Workbook()
-                kreiraj.save(filename="BazaKontakata.xlsx")
-                kontakti = load_workbook(filename="BazaKontakata.xlsx")
+                create = Workbook()
+                create.save(filename="ContactsDatabase.xlsx")
+                contacts = load_workbook(filename="ContactsDatabase.xlsx")
 
-            kontakti.active = 0
-            Sheet = kontakti.active
+            contacts.active = 0
+            Sheet = contacts.active
 
             Sheet.column_dimensions['A'].width = 20.0
             Sheet.column_dimensions['B'].width = 20.0
             Sheet.column_dimensions['C'].width = 20.0
 
             if Sheet["A1"].value == "" or Sheet["A1"].value == None:
-                Sheet["A1"] = "IME"
-                Sheet["B1"] = "PREZIME"
-                Sheet["C1"] = "TELEFON"
+                Sheet["A1"] = "NAME"
+                Sheet["B1"] = "LASTNAME"
+                Sheet["C1"] = "PHONE_NUMBER"
 
-            for kontakt in self.lista:
-                ime = kontakt[0]
-                prezime = kontakt[1]
-                telefon = kontakt[2]
+            for contact in self.list1:
+                name = contact[0]
+                lastname = contact[1]
+                phone_number = contact[2]
 
-                broj = 2
+                number = 2
                 for value in Sheet.iter_rows(min_row=1, min_col=1, max_col=3, values_only=True):
-                    if Sheet["A" + str(broj)].value == "" or Sheet["A" + str(broj)].value == None:
-                        Sheet["A" + str(broj)] = ime
-                        Sheet["B" + str(broj)] = prezime
-                        Sheet["C" + str(broj)] = telefon
-                        br = 0
-                        for value in Sheet.iter_rows(min_row=broj+1, min_col=1, max_col=3, values_only=True):
-                            if Sheet["A" + str(broj+1+br)].value == ime and Sheet["B" + str(broj+1+br)].value == prezime and Sheet["C" + str(broj+1+br)].value == telefon:
-                                Sheet["A" + str(broj + 1 + br)] = ""
-                                Sheet["B" + str(broj + 1 + br)] = ""
-                                Sheet["C" + str(broj + 1 + br)] = ""
-                            br+=1
-                    elif Sheet["A" + str(broj)].value == ime and Sheet["B" + str(broj)].value == prezime and Sheet["C" + str(broj)].value == telefon:
+                    if Sheet["A" + str(number)].value == "" or Sheet["A" + str(number)].value == None:
+                        Sheet["A" + str(number)] = name
+                        Sheet["B" + str(number)] = lastname
+                        Sheet["C" + str(number)] = phone_number
+                        num = 0
+                        for value in Sheet.iter_rows(min_row=number+1, min_col=1, max_col=3, values_only=True):
+                            if Sheet["A" + str(number+1+num)].value == name and Sheet["B" + str(number+1+num)].value == lastname and Sheet["C" + str(number+1+num)].value == phone_number:
+                                Sheet["A" + str(number + 1 + num)] = ""
+                                Sheet["B" + str(number + 1 + num)] = ""
+                                Sheet["C" + str(number + 1 + num)] = ""
+                            num+=1
+                    elif Sheet["A" + str(number)].value == name and Sheet["B" + str(number)].value == lastname and Sheet["C" + str(number)].value == phone_number:
                         break
                     else:
-                        broj+=1
+                        number+=1
 
-            kontakti.save(filename="BazaKontakata.xlsx")
+            contacts.save(filename="ContactsDatabase.xlsx")
             messagebox.showinfo("Obavestenje","Uspesno ste snimili kontakte u bazu.")
         else:
             messagebox.showwarning("Obavestenje","Niste dodali kontakte u listu da biste ih memorisali u bazu.")
 
 
-    def pretrazi(self):
-        for kontakt in self.lista:
-            if self.rbutton.get()==1 and self.nadji.get() in kontakt[0]:
-                self.lista1.append(kontakt)
-            elif self.rbutton.get()==2 and self.nadji.get() in kontakt[1]:
-                self.lista1.append(kontakt)
-            elif self.rbutton.get()==3 and self.nadji.get() in kontakt[2]:
-                self.lista1.append(kontakt)
+    def search(self):
+        for contact in self.list1:
+            if self.rbutton.get()==1 and self.find.get() in contact[0]:
+                self.list2.append(contact)
+            elif self.rbutton.get()==2 and self.find.get() in contact[1]:
+                self.list2.append(contact)
+            elif self.rbutton.get()==3 and self.find.get() in contact[2]:
+                self.list2.append(contact)
 
-        if self.lista1==[]:
+        if self.list2==[]:
             messagebox.showwarning("Obavestenje","Trazeni kontakt nije pronadjen.")
-            self.nadji.set("Pretrazi...")
+            self.find.set("Pretrazi...")
         else:
-            self.spisak.delete(*self.spisak.get_children())
-            self.lista.clear()
-            for kontakt in self.lista1:
-                self.spisak.insert("", "end", values=((kontakt[0]), (kontakt[1]), (kontakt[2])))
-                self.lista.append((kontakt[0], kontakt[1], kontakt[2]))
-            self.lista1.clear()
-            self.nadji.set("Pretrazi...")
+            self.display.delete(*self.display.get_children())
+            self.list1.clear()
+            for contact in self.list2:
+                self.display.insert("", "end", values=((contact[0]), (contact[1]), (contact[2])))
+                self.list1.append((contact[0], contact[1], contact[2]))
+            self.list2.clear()
+            self.find.set("Pretrazi...")
 
 
-    def izmeni(self):
-        if len(self.spisak.selection()) == 1:
-            self.izmenaKontakta = tk.Toplevel()
-            self.izmenaKontakta.title("Izmena")
-            self.kontakt_za_izmenu = self.spisak.selection()[0]
-            self.listaIzmena = list(self.spisak.item(self.kontakt_za_izmenu).values())[2]
-            self.staroIme = self.listaIzmena[0]
-            self.staroPrezime = self.listaIzmena[1]
-            self.stariTelefon = str(self.listaIzmena[2])
-            self.novoIme = StringVar()
-            self.novoPrezime = StringVar()
-            self.novBrojTelefona = StringVar()
+    def edit(self):
+        if len(self.display.selection()) == 1:
+            self.change = tk.Toplevel()
+            self.change.title("Izmena")
+            self.contact_for_change = self.display.selection()[0]
+            self.change_list = list(self.display.item(self.contact_for_change).values())[2]
+            self.previous_name = self.change_list[0]
+            self.previous_lastname = self.change_list[1]
+            self.previous_phone_number = str(self.change_list[2])
+            self.new_name = StringVar()
+            self.new_lastname = StringVar()
+            self.new_phone_number = StringVar()
 
-            tk.Label(self.izmenaKontakta, text="Unesite novo ime:").grid(row=0, column=0)
-            tk.Label(self.izmenaKontakta, text="Unesite novo prezime:").grid(row=1, column=0)
-            tk.Label(self.izmenaKontakta, text="Unesite nov broj telefona:").grid(row=2, column=0)
-            tk.Button(self.izmenaKontakta, text="Izmeni", command=self.izmeni_kontakt).grid(row=3, column=0, columnspan=2, sticky=W+E)
-            self.novoImeEntry = tk.Entry(self.izmenaKontakta, textvariable=self.novoIme)
-            self.novoPrezimeEntry = tk.Entry(self.izmenaKontakta, textvariable=self.novoPrezime)
-            self.novBrojTelefonaEntry = tk.Entry(self.izmenaKontakta, textvariable=self.novBrojTelefona)
-            self.novoImeEntry.grid(row=0, column=1)
-            self.novoPrezimeEntry.grid(row=1, column=1)
-            self.novBrojTelefonaEntry.grid(row=2, column=1)
+            tk.Label(self.change, text="Unesite novo ime:").grid(row=0, column=0)
+            tk.Label(self.change, text="Unesite novo prezime:").grid(row=1, column=0)
+            tk.Label(self.change, text="Unesite nov broj telefona:").grid(row=2, column=0)
+            tk.Button(self.change, text="Izmeni", command=self.change_contact).grid(row=3, column=0, columnspan=2, sticky=W + E)
+            self.newNameEntry = tk.Entry(self.change, textvariable=self.new_name)
+            self.newLastnameEntry = tk.Entry(self.change, textvariable=self.new_lastname)
+            self.newPhoneNumberEntry = tk.Entry(self.change, textvariable=self.new_phone_number)
+            self.newNameEntry.grid(row=0, column=1)
+            self.newLastnameEntry.grid(row=1, column=1)
+            self.newPhoneNumberEntry.grid(row=2, column=1)
 
-            self.novoImeEntry.insert(0, self.listaIzmena[0])
-            self.novoPrezimeEntry.insert(0, self.listaIzmena[1])
-            self.novBrojTelefonaEntry.insert(0, str(self.listaIzmena[2]))
+            self.newNameEntry.insert(0, self.change_list[0])
+            self.newLastnameEntry.insert(0, self.change_list[1])
+            self.newPhoneNumberEntry.insert(0, str(self.change_list[2]))
 
-        elif len(self.spisak.selection()) < 1:
+        elif len(self.display.selection()) < 1:
             messagebox.showwarning("Obavestenje","Niste selektovali kontakt koji zelite da izmenite.")
         else:
             messagebox.showwarning("Obavestenje","Ne mozete izmeniti vise kontakata istovremeno. Selektujte samo jedan kontakt.")
 
 
-    def izmeni_kontakt(self):
-        if self.validacija(self.novoIme,self.novoPrezime,self.novBrojTelefona,self.novoImeEntry,self.novoPrezimeEntry,self.novBrojTelefonaEntry) == True:
+    def change_contact(self):
+        if self.validation(self.new_name, self.new_lastname, self.new_phone_number, self.newNameEntry, self.newLastnameEntry, self.newPhoneNumberEntry) == True:
             id = 0
-            for kontakt in self.lista:
-                if kontakt == (self.staroIme,self.staroPrezime,self.stariTelefon):
-                    self.lista.pop(id)
-                    self.lista.insert(id,(self.novoIme.get(),self.novoPrezime.get(),self.novBrojTelefona.get()))
+            for contact in self.list1:
+                if contact == (self.previous_name, self.previous_lastname, self.previous_phone_number):
+                    self.list1.pop(id)
+                    self.list1.insert(id, (self.new_name.get(), self.new_lastname.get(), self.new_phone_number.get()))
                     break
                 else:
                     id += 1
-            self.spisak.delete(*self.spisak.get_children())
-            for kontakt in self.lista:
-                self.spisak.insert("", "end", values=((kontakt[0]), (kontakt[1]), (kontakt[2])))
+            self.display.delete(*self.display.get_children())
+            for contact in self.list1:
+                self.display.insert("", "end", values=((contact[0]), (contact[1]), (contact[2])))
 
-            self.izmenaKontakta.destroy()
+            self.change.destroy()
 
-            pitanje = messagebox.askquestion("Pitanje", "Da li zelite da izmenite ovaj kontakt i u bazi?", icon="question")
-            if pitanje == "yes":
+            question = messagebox.askquestion("Pitanje", "Da li zelite da izmenite ovaj kontakt i u bazi?", icon="question")
+            if question == "yes":
                 try:
-                    kontakti = load_workbook(filename="BazaKontakata.xlsx")
-                    kontakti.active = 0
-                    Sheet = kontakti.active
-                    promena = False
-                    broj = 2
+                    contacts = load_workbook(filename="ContactsDatabase.xlsx")
+                    contacts.active = 0
+                    Sheet = contacts.active
+                    change = False
+                    number = 2
                     for value in Sheet.iter_rows(min_row=2, min_col=1, max_col=3, values_only=True):
-                        if value[0] == self.staroIme and value[1] == self.staroPrezime and str(value[2]) == str(self.stariTelefon):
-                            Sheet["A" + str(broj)] = self.novoIme.get()
-                            Sheet["B" + str(broj)] = self.novoPrezime.get()
-                            Sheet["C" + str(broj)] = self.novBrojTelefona.get()
-                            kontakti.save(filename="BazaKontakata.xlsx")
-                            promena = True
+                        if value[0] == self.previous_name and value[1] == self.previous_lastname and str(value[2]) == str(self.previous_phone_number):
+                            Sheet["A" + str(number)] = self.new_name.get()
+                            Sheet["B" + str(number)] = self.new_lastname.get()
+                            Sheet["C" + str(number)] = self.new_phone_number.get()
+                            contacts.save(filename="ContactsDatabase.xlsx")
+                            change = True
                         else:
-                            broj += 1
+                            number += 1
 
-                    if promena == True:
+                    if change == True:
                         messagebox.showinfo("Obavestenje", "Zeljena promena kontakta je izvrsena u bazi kontakata.")
                     else:
                         messagebox.showinfo("Obavestenje", "Kontakt koji zelite promeniti se ne nalazi u bazi kontakata.")
@@ -344,29 +344,29 @@ class PhoneBook():
                 messagebox.showinfo("Obavestenje","Kontakt je promenjen na listi kontakata, ali ne i u bazi.")
 
 
-    def ispisiBazu(self):
+    def importDatabase(self):
         try:
-            kontakti = load_workbook(filename="BazaKontakata.xlsx")
-            kontakti.active = 0
-            Sheet = kontakti.active
+            contacts = load_workbook(filename="ContactsDatabase.xlsx")
+            contacts.active = 0
+            Sheet = contacts.active
 
             for value in Sheet.iter_rows(min_row=2, min_col=1, max_col=3, values_only=True):
                 if value[0]!=None and value[1]!=None and value[2]!=None:
-                    self.spisak.insert("", "end", values=((value[0]), (value[1]), (value[2])))
-                    self.lista.append((value[0],value[1],value[2]))
+                    self.display.insert("", "end", values=((value[0]), (value[1]), (value[2])))
+                    self.list1.append((value[0], value[1], value[2]))
                 else:
                     pass
-            if self.lista == []:
+            if self.list1 == []:
                 messagebox.showwarning("Obavestenje","Baza kontakata je prazna.")
         except:
             messagebox.showinfo("Obavestenje","Ne postoji baza sa kontaktima.")
 
 
-    def obrisiBazu(self):
-        upozorenje = messagebox.askquestion("Upozorenje","Upozorenje! Bice obrisana baza i svi kontakti u njoj. Da li ste sigurni da zelite da nastavite?",icon="warning")
-        if upozorenje == "yes":
+    def deleteDatabase(self):
+        warning = messagebox.askquestion("Upozorenje","Upozorenje! Bice obrisana baza i svi kontakti u njoj. Da li ste sigurni da zelite da nastavite?",icon="warning")
+        if warning == "yes":
             try:
-                filePath = os.path.join(os.getcwd(), "BazaKontakata.xlsx")
+                filePath = os.path.join(os.getcwd(), "ContactsDatabase.xlsx")
                 os.remove(filePath)
                 messagebox.showinfo("Obavestenje", "Baza sa kontaktima je uspesno obrisana.")
             except:
